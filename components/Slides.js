@@ -16,7 +16,7 @@ const PosterView = styled.View`
    
 `
 const Poster = styled.Image`
-    width: 100px;
+    width: 120px;
     height: 160px;
     border-radius: 8px;
 `
@@ -26,12 +26,10 @@ const Wrapper = styled.View`
     justify-content: center;
     align-items: center;
 `;
-const TitleView = styled.View`
-    width: 50%;
-`;
+
 const Column = styled.View`
    width: 50%;
-   margin-left: 18px;
+   margin-left: 20px;
 `
 const OverView = styled.Text`
     color: rgba(255,255,255,0.6);
@@ -45,17 +43,23 @@ const Votes = styled.Text`
 `;
 
 
-const Slide = () => {
+const Slide = ({
+    background_image,
+    medium_cover_image,
+    title,
+    rating,
+    summary,
+}) => {
     return(
         <View style={{flex:1}}>
-            <BgImg source={{uri:movie.background_image}}></BgImg>
+            <BgImg source={{uri:background_image}}></BgImg>
             <PosterView >
                 <Wrapper>
-                    <Poster source={{uri:movie.medium_cover_image}}></Poster>
+                    <Poster source={{uri:medium_cover_image}}></Poster>
                     <Column>
-                        <Title>{movie.title}</Title>
-                        <Votes>평점 : {movie.rating}</Votes>
-                        <OverView>{movie.summary.slice(0,90)}...</OverView>
+                        <Title>{title}</Title>
+                        <Votes>평점 : {rating}</Votes>
+                        <OverView>{summary.slice(0,90)}...</OverView>
                     </Column>
                 </Wrapper>
             </PosterView>

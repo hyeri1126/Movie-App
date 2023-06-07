@@ -3,6 +3,7 @@ import { TouchableOpacity, Text, ActivityIndicator, StyleSheet, Button} from 're
 import { Dimensions } from "react-native";
 import Swiper from 'react-native-web-swiper';
 import styled from 'styled-components/native';
+import Slide from '../components/Slides';
 
 
 
@@ -48,7 +49,13 @@ const Movies = ({navigation:{navigate}}) => {
             containerStyle={{ width:"100%", height: SCREEN_HEIGHT/4 }}
         >
            {nowPlaying.map(movie => (
-           
+            <Slide key={movie.id}
+                background_image={movie.background_image}
+                medium_cover_image={movie.medium_cover_image}
+                title={movie.title}
+                rating={movie.rating}
+                summary={movie.summary}
+            />
            ))}
         </Swiper>
       </Container>
