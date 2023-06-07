@@ -1,6 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 import styled from "styled-components/native";
+import Poster from "./Poster";
 
 
 const BgImg = styled.Image`
@@ -15,11 +16,7 @@ const Title = styled.Text`
 const PosterView = styled.View`
    
 `
-const Poster = styled.Image`
-    width: 120px;
-    height: 160px;
-    border-radius: 8px;
-`
+
 const Wrapper = styled.View`
     flex-direction:row;
     height: 100%;
@@ -55,7 +52,7 @@ const Slide = ({
             <BgImg source={{uri:background_image}}></BgImg>
             <PosterView >
                 <Wrapper>
-                    <Poster source={{uri:medium_cover_image}}></Poster>
+                    <Poster path={medium_cover_image} />
                     <Column>
                         <Title>{title}</Title>
                         <Votes>평점 : {rating}</Votes>
