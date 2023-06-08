@@ -34,11 +34,7 @@ const OverView = styled.Text`
     margin-top: 10px;
     font-weight: 500;
 `;
-const Votes = styled.Text`
-    color: rgba(255,255,128,0.8);
-    font-size: 10px;
-    font-weight: 500;
-`;
+
 
 
 const Slide = ({

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, Text, ActivityIndicator, StyleSheet, Button, ScrollView, RefreshControl} from 'react-native';
+import { View, Text, ActivityIndicator, ScrollView, RefreshControl, FlatList} from 'react-native';
 import { Dimensions } from "react-native";
 import Swiper from 'react-native-web-swiper';
 import styled from 'styled-components/native';
@@ -31,10 +31,6 @@ const ListTitle = styled.Text`
     font-weight: 500;
     margin-bottom: 20px;
 `
-const TrendingScroll = styled.ScrollView`
-   
-`
-
 
 const ListContainer = styled.View`
     margin-bottom: 20px;
@@ -65,7 +61,7 @@ const Movies = ({navigation:{navigate}}) => {
     };
     const getTrending = async() => {
         const {data} = await (
-            await fetch("https://yts.mx/api/v2/list_movies.json?minimum_rating=3&sort_by=year")
+            await fetch("https://yts.mx/api/v2/list_movies.json?minimum_rating=2&sort_by=year")
         ).json();
         setTrending(data.movies)
     }
@@ -111,32 +107,39 @@ const Movies = ({navigation:{navigate}}) => {
         </Swiper>
         <ListContainer>
             <ListTitle>Trending Movies</ListTitle>
-            <TrendingScroll 
-            horizontal
-            showsHorizontalScrollIndicator={true}
-            contentContainerStyle={{paddingLeft:13}}
-            >
-                {trending.slice(0,15).map(movie => (
+            <FlatList 
+                data={trending}
+                horizontal
+                keyExtractor={(item)=>item.id + ""}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{paddingHorizontal:13}}
+                ItemSeparatorComponent={() => 
+                    <View style={{width:13}} />
+                }
+                renderItem={({item}) => 
                     <VMedia 
-                        key={movie.id}    
-                        posterImage={movie.medium_cover_image}
-                        title={movie.title}
-                        rating={movie.rating}
+                        posterImage={item.medium_cover_image}
+                        title={item.title}
+                        rating={item.rating}
                     />
-                ))}
-            </TrendingScroll>
+                }
+            />
         </ListContainer>
         <CommingSoonTitle>Comming Soon</CommingSoonTitle>
-        {upComing.slice(1,20).map(movie => (
-            <HMedia 
-                key={movie.id}
-                posterPath={movie.medium_cover_image}
-                title={movie.title}
-                summary={movie.summary}
-                uploadData={movie.date_uploaded}
-                rating={movie.rating}
-            />
-        ))}
+        <FlatList 
+            data={upComing}
+            keyExtractor={(item)=>item.id+""}
+            ItemSeparatorComponent={() => <View style={{height:30}} />}
+            renderItem={({item}) => 
+                <HMedia 
+                    posterPath={item.medium_cover_image}
+                    title={item.title}
+                    summary={item.summary}
+                    uploadData={item.date_uploaded}
+                    rating={item.rating}
+                />
+        }
+        />
       </Container>
     )
 }

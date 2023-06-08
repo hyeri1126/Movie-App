@@ -6,12 +6,12 @@ import Poster from "./Poster";
 const HorizontalMovie = styled.View`
     padding: 0px 15px;
     flex-direction: row;
-    margin-bottom: 30px;
     width: 80%;
 `
 const HColumn = styled.View`
     margin-left: 15px;
     width: 80%;
+    justify-content: center;
 `
 const Overview = styled.Text`
     color: white;
