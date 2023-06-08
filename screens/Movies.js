@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, Text, ActivityIndicator, StyleSheet, Button, ScrollView} from 'react-native';
+import { TouchableOpacity, Text, ActivityIndicator, StyleSheet, Button, ScrollView, RefreshControl} from 'react-native';
 import { Dimensions } from "react-native";
 import Swiper from 'react-native-web-swiper';
 import styled from 'styled-components/native';
 import Slide from '../components/Slides';
 import Poster from '../components/Poster';
+import Rating from '../components/Rating';
+import VMedia from '../components/VerticalMedia';
+import HMedia from '../components/HorizontalMedia';
 
 
 
@@ -31,46 +34,18 @@ const ListTitle = styled.Text`
 const TrendingScroll = styled.ScrollView`
    
 `
-const Movie = styled.View`
-    margin-right: 10px;
-    align-items: center;
-`
-const Title = styled.Text`
-    color: white;
-    margin-top: 3px;
-`
-const Votes = styled.Text`
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 10px;
-`
+
+
 const ListContainer = styled.View`
     margin-bottom: 20px;
 `
 const CommingSoonTitle= styled(ListTitle)`
     
 `
-const HorizontalMovie = styled.View`
-    padding: 0px 15px;
-    flex-direction: row;
-    margin-bottom: 30px;
-    width: 80%;
-`
-const HColumn = styled.View`
-    margin-left: 15px;
-    width: 80%;
-`
-const Overview = styled.Text`
-    color: white;
-    opacity:0.7;
-  
-`
-const Release = styled.Text`
-    color: white;
-    font-size: 11px;
-    margin-bottom: 10px;
-`
+
 const Movies = ({navigation:{navigate}}) => {
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false)
     const [nowPlaying, setNowPlaying] = useState([])
     const [upComing, setUpcoming] = useState([])
     const [trending, setTrending] = useState([])
@@ -101,13 +76,23 @@ const Movies = ({navigation:{navigate}}) => {
     useEffect(()=>{
         getData()
     },[])
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await getData();
+        setRefreshing(false);
+    }
 
     return loading ? (
         <Loader>
            <ActivityIndicator  />
         </Loader>
     ) : (
-      <Container>
+      <Container
+        refreshControl={
+            <RefreshControl 
+                refreshing={refreshing}
+                onRefresh={onRefresh} />
+        }>
         <Swiper 
             loop 
             timeout={3} 
@@ -132,34 +117,25 @@ const Movies = ({navigation:{navigate}}) => {
             contentContainerStyle={{paddingLeft:13}}
             >
                 {trending.slice(0,15).map(movie => (
-                    <Movie key={movie.id}>
-                        <Poster path={movie.medium_cover_image}/>
-                        <Title>
-                            {movie.title.slice(0,13)}
-                            {movie.title.length > 13 ? "..." : null}
-                        </Title>
-                        <Votes>rating: {movie.rating}/10</Votes>
-                    </Movie>
+                    <VMedia 
+                        key={movie.id}    
+                        posterImage={movie.medium_cover_image}
+                        title={movie.title}
+                        rating={movie.rating}
+                    />
                 ))}
             </TrendingScroll>
         </ListContainer>
         <CommingSoonTitle>Comming Soon</CommingSoonTitle>
         {upComing.slice(1,20).map(movie => (
-            <HorizontalMovie key={movie.id}>
-                <Poster path={movie.medium_cover_image}/>
-                <HColumn>
-                    <Title style={{marginBottom:10}}>{movie.title}</Title>
-                    <Release>
-                        {new Date(movie.date_uploaded.slice(0,10)).toLocaleDateString("ko", {
-                            month:"long", day:"numeric", year:"numeric"
-                        })}
-                    </Release>
-                    {movie.summary.length > 140 ? 
-                    <Overview>{movie.summary.slice(0,140)}...</Overview> :
-                    <Overview >{movie.summary}</Overview>}
-                 
-                </HColumn>
-            </HorizontalMovie>
+            <HMedia 
+                key={movie.id}
+                posterPath={movie.medium_cover_image}
+                title={movie.title}
+                summary={movie.summary}
+                uploadData={movie.date_uploaded}
+                rating={movie.rating}
+            />
         ))}
       </Container>
     )

@@ -2,6 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import styled from "styled-components/native";
 import Poster from "./Poster";
+import Rating from "./Rating";
 
 
 const BgImg = styled.Image`
@@ -55,7 +56,7 @@ const Slide = ({
                     <Poster path={medium_cover_image} />
                     <Column>
                         <Title>{title}</Title>
-                        <Votes>평점 : {rating}</Votes>
+                        <Rating rating={rating} />
                         <OverView>{summary.slice(0,90)}...</OverView>
                     </Column>
                 </Wrapper>
