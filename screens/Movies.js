@@ -8,6 +8,10 @@ import Poster from '../components/Poster';
 import Rating from '../components/Rating';
 import VMedia from '../components/VerticalMedia';
 import HMedia from '../components/HorizontalMedia';
+import { moviesAPI } from '../api';
+import { QueryClient, useQuery, useQueryClient } from 'react-query';
+import Loader from '../components/Loader';
+import HList from '../components/HList';
 
 
 
@@ -15,11 +19,6 @@ const Container = styled.FlatList`
     background-color: ${props => props.theme.mainBgColor};
 `;
 
-const Loader = styled.View`
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-`;
 
 const { height:SCREEN_HEIGHT } = Dimensions.get("window"); 
 // const SCREEN_HEIGHT = Dimensions.get("window").height; -> 위에랑 같은 방식
@@ -45,44 +44,27 @@ const HSeperator = styled.View`
     height: 30px;
 `
 //Movie 컴포넌트 START
-const Movies = ({navigation:{navigate}}) => {
-    const [loading, setLoading] = useState(true);
-    const [refreshing, setRefreshing] = useState(false)
-    const [nowPlaying, setNowPlaying] = useState([])
-    const [upComing, setUpcoming] = useState([])
-    const [trending, setTrending] = useState([])
-    const getNowPlaying = async () => {
-        // const response = await fetch("https://yts.mx/api/v2/list_movies.json?minimum_rating=9&sort_by=year")
-        // const { data } = await response.json();
-        const {data} = await (
-            await fetch("https://yts.mx/api/v2/list_movies.json?minimum_rating=9&sort_by=year")
-        ).json();
-        setNowPlaying(data.movies);
-    };
-    const getUpComing = async () => {
-        const {data} = await (
-            await fetch("https://yts.mx/api/v2/list_movies.json?minimum_rating=6&sort_by=year")
-        ).json();
-        setUpcoming(data.movies)
-    };
-    const getTrending = async() => {
-        const {data} = await (
-            await fetch("https://yts.mx/api/v2/list_movies.json?minimum_rating=2&sort_by=year")
-        ).json();
-        setTrending(data.movies)
-    }
-    const getData = async () => {
-        await Promise.all([getTrending(), getNowPlaying(), getUpComing()])
-        setLoading(false);
-    };
-    useEffect(()=>{
-        getData()
-    },[])
+const Movies = () => {
+    const queryClinet = useQueryClient();
+    const {
+        isLoading:nowPlayingLoading, 
+        data:nowPlayingData, 
+        isRefetching:isRefetchingNowPlaying,
+    } = useQuery(["movies","nowPlaying"], moviesAPI.getNowPlaying)
+    const {
+        isLoading:upComingLoading, 
+        data:upComingData, 
+        isRefetching:isRefetchingUpComing,
+    } = useQuery(["movies","upComing"], moviesAPI.getUpComing)
+    const {
+        isLoading:trendingLoading, 
+        data:trendingData, 
+        isRefetching:isRefetchingTrending,
+    } = useQuery(["movies","trending"], moviesAPI.getTrending)
+  
     const onRefresh = async () => {
-        setRefreshing(true);
-        await getData();
-        setRefreshing(false);
-    }
+        queryClinet.refetchQueries(["movies"]);
+    };
     const renderVMeida = ({item}) => (
         <VMedia 
             posterImage={item.medium_cover_image}
@@ -99,12 +81,13 @@ const Movies = ({navigation:{navigate}}) => {
             rating={item.rating}
         />
     )
-    const moviekeyExtractor = (item)=>item.id + ""
+    const moviekeyExtractor = (item)=>item.id + "";
+    const loading = nowPlayingLoading || upComingLoading || trendingLoading;
+    const refreshing = isRefetchingNowPlaying || isRefetchingUpComing || isRefetchingTrending;
+  
     // Movie RETURN
     return loading ? (
-        <Loader>
-           <ActivityIndicator  />
-        </Loader>
+      <Loader />
     ) : (
       <Container
         onRefresh={onRefresh}
@@ -116,7 +99,7 @@ const Movies = ({navigation:{navigate}}) => {
                 controlsEnabled={false}
                 containerStyle={{ marginBottom:20, width:"100%", height: SCREEN_HEIGHT/4 }}
             >
-            {nowPlaying.map(movie => (
+            {nowPlayingData.data.movies.map((movie) => (
                 <Slide key={movie.id}
                     background_image={movie.background_image}
                     medium_cover_image={movie.medium_cover_image}
@@ -126,10 +109,14 @@ const Movies = ({navigation:{navigate}}) => {
                 />
             ))}
             </Swiper>
-            <ListContainer>
+            <HList 
+                title="Trending Movies"
+                data={trendingData.data.movies}
+            />
+            {/* <ListContainer>
                 <ListTitle>Trending Movies</ListTitle>
                 <FlatList 
-                    data={trending}
+                    data={trendingData.data.movies}
                     horizontal
                     keyExtractor={moviekeyExtractor}
                     showsHorizontalScrollIndicator={false}
@@ -137,10 +124,10 @@ const Movies = ({navigation:{navigate}}) => {
                     ItemSeparatorComponent={VSeperator}
                     renderItem={renderVMeida}
                 />
-            </ListContainer>
+            </ListContainer> */}
             <CommingSoonTitle>Comming Soon</CommingSoonTitle>
         </>}
-        data={upComing}
+        data={upComingData.data.movies}
         keyExtractor={moviekeyExtractor}
         ItemSeparatorComponent={HSeperator}
         renderItem={renderHMedia}
