@@ -14,6 +14,11 @@ export const moviesAPI = {
     fetch(
         "https://yts.mx/api/v2/list_movies.json?minimum_rating=2&sort_by=year"
     ).then((res)=>res.json()),
+    search: () => {
+        return fetch(
+            "https://yts.mx/api/v2/list_movies.json?minimum_rating=2&sort_by=year"
+        ).then((res)=>res.json())
+    }
 };
 
 export const tvAPI = {
