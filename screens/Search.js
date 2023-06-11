@@ -24,7 +24,7 @@ const Search = () => {
     return(
         <Container>
             <SearchBar 
-                placeholder='Search for Movie or TV Show'
+                placeholder='Search for Movie or TV Show update'
                 placeholderTextColor="grey"
                 onChangeText={onChangeText}
                 onSubmitEditing={onSubmit}
