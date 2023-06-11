@@ -43,26 +43,35 @@ const BtnText = styled.Text`
     font-weight: 600;
     margin-bottom: 10px;
 `;
+const goToDetail=() => {
+    navigation.navigate("Stack", {
+        screen:"Detail" , 
+        params:{
+            title,
+        },
+    });
+}
 const Data = styled.View`
-    padding: 0 10px;
+    padding: 0 20px;
 `
 
 const Detail = ({
     navigation:{setOptions},
-    route:{params},
+    route:{params}
     }) => {
-        const {isLoading,data:movieData} = useQuery(
-            ["movies", params.id], 
-            moviesAPI.detail
-            //query들을 원할 때 enable, disable 시킬 수 있음 -> { enabled : true or false}
-            );
-        useEffect(()=>{
-            setOptions({
-                title:  params.title
-            })
-        },[]);
-       const data = movieData.data.movie;
-       console.log(data);        
+    console.log(params);
+    //     const {isLoading,data:movieData} = useQuery(
+    //         ["movies", params.id], 
+    //         moviesAPI.detail
+    //         );
+    useEffect(()=>{
+        setOptions({
+            title: params.title,
+        })
+    },[]);
+    // const allData=params.allData;
+    //    const data = movieData.data.movie;
+    //    console.log(data);        
         // console.log(data.data.movie.torrents)
     return(
         <Container>
@@ -83,15 +92,17 @@ const Detail = ({
             </Header>
             <Data>
                 <Overview>{params.summary}</Overview>
-                {isLoading ? <Loader/> : null}
+                {/* {isLoading ? <Loader/> : null}
                 {data.torrents.map((url) => (
                     <VideoBtn key={url.peers}>
                         <BtnText>
                             {url.date_uploaded}
                         </BtnText>
                     </VideoBtn>
-                ))}
+                ))} */}
             </Data>
+            <Text>hello detail</Text>
+
            
         </Container>
     )

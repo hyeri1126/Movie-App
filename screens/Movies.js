@@ -79,6 +79,7 @@ const Movies = () => {
             summary={item.summary}
             uploadData={item.date_uploaded}
             rating={item.rating}
+            allData={item}
         />
     )
     const moviekeyExtractor = (item)=>item.id + "";
@@ -106,6 +107,7 @@ const Movies = () => {
                     title={movie.title}
                     rating={movie.rating}
                     summary={movie.summary}
+                    allData={movie}
                 />
             ))}
             </Swiper>

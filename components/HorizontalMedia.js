@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import Poster from "./Poster";
+import { TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 
 const HorizontalMovie = styled.View`
@@ -34,24 +36,36 @@ const HMedia = ({
     summary,
     uploadData,
     rating,
-
+    allData,
 }) => {
+    const navigation = useNavigation();
+    const goToDetail=() => {
+        navigation.navigate("Stack", {
+            screen:"Detail", 
+            params:{
+               ...allData,
+            },
+        });
+    }
     return(
-        <HorizontalMovie>
-            <Poster path={posterPath}/>
-            <HColumn>
-                <Title style={{marginBottom:10}}>{title}</Title>
-                <Release>
-                    {new Date(uploadData.slice(0,10)).toLocaleDateString("ko", {
-                        month:"long", day:"numeric", year:"numeric"
-                    })}
-                </Release>
-                {summary.length > 140 ? 
-                <Overview>{summary.slice(0,140)}...</Overview> :
-                <Overview >{summary}</Overview>}
-            
-            </HColumn>
-        </HorizontalMovie>
+        <TouchableOpacity onPress={goToDetail}>
+            <HorizontalMovie>
+                <Poster path={posterPath}/>
+                <HColumn>
+                    <Title style={{marginBottom:10}}>{title}</Title>
+                    <Release>
+                        {new Date(uploadData.slice(0,10)).toLocaleDateString("ko", {
+                            month:"long", day:"numeric", year:"numeric"
+                        })}
+                    </Release>
+                    {summary.length > 140 ? 
+                    <Overview>{summary.slice(0,140)}...</Overview> :
+                    <Overview >{summary}</Overview>}
+                
+                </HColumn>
+            </HorizontalMovie>
+        </TouchableOpacity>
+     
 
     )
 }

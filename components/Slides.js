@@ -1,9 +1,9 @@
 import React from "react";
-import { View } from "react-native";
+import { View, TouchableWithoutFeedback } from "react-native";
 import styled from "styled-components/native";
 import Poster from "./Poster";
 import Rating from "./Rating";
-
+import { useNavigation } from "@react-navigation/native";
 
 const BgImg = styled.Image`
     width: 100%;
@@ -43,21 +43,34 @@ const Slide = ({
     title,
     rating,
     summary,
+    allData,
 }) => {
+    const navigation = useNavigation();
+    const goToDetail=() => {
+        navigation.navigate("Stack", {
+            screen:"Detail" , 
+            params:{
+                ...allData,
+            },
+        });
+    }
     return(
-        <View style={{flex:1}}>
-            <BgImg source={{uri:background_image}}></BgImg>
-            <PosterView >
-                <Wrapper>
-                    <Poster path={medium_cover_image} />
-                    <Column>
-                        <Title>{title}</Title>
-                        <Rating rating={rating} />
-                        <OverView>{summary.slice(0,90)}...</OverView>
-                    </Column>
-                </Wrapper>
-            </PosterView>
-        </View>
+        <TouchableWithoutFeedback onPress={goToDetail}>
+            <View style={{flex:1}}>
+                <BgImg source={{uri:background_image}}></BgImg>
+                <PosterView >
+                    <Wrapper>
+                        <Poster path={medium_cover_image} />
+                        <Column>
+                            <Title>{title}</Title>
+                            <Rating rating={rating} />
+                            <OverView>{summary.slice(0,90)}...</OverView>
+                        </Column>
+                    </Wrapper>
+                </PosterView>
+            </View>
+        </TouchableWithoutFeedback>
+
     )
 }
 

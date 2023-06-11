@@ -33,6 +33,7 @@ const HList = ({title, data}) => {
                             posterImage={item.medium_cover_image}
                             title={item.title}
                             rating={item.rating}
+                            allData={item}
                         />
                     }
                 />
