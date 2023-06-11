@@ -24,6 +24,7 @@ const Search = () => {
                 returnKeyLabel="search"
                 onChange={onChangeText}
             />
+       
         </Container>
     )
 }
