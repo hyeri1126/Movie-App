@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, ScrollView, RefreshControl } from 'react-native';
 import { QueryClient, useQuery, useQueryClient } from 'react-query';
 import { tvAPI } from '../api';
@@ -7,6 +7,7 @@ import HList from '../components/HList';
 
 const Tv = () => {
     const queryClinet = useQueryClient();
+    // const [refreshing, setRefreshing] = useState(false)
     const {isLoading:todayLoading, data:todayData, isRefetching:todayRefetching} = useQuery(
         ["tv", "today"], 
         tvAPI.airingToday
