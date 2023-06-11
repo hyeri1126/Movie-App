@@ -1,12 +1,14 @@
 import React , {useEffect} from 'react';
-import styled from 'styled-components';
-import {View, Text, Dimensions, StyleSheet} from 'react-native';
+import styled from 'styled-components/native';
+import {View, Text, Dimensions, StyleSheet, Linking, TouchableOpacity, Share, Platform} from 'react-native';
 import Poster from '../components/Poster';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BLACK_COLOR } from '../colors';
 import { useQuery } from 'react-query';
 import { moviesAPI, tvAPI } from '../api';
 import Loader from '../components/Loader';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 const { height:SCREEN_HEIGHT } = Dimensions.get("window"); 
 
@@ -36,21 +38,23 @@ const Overview = styled.Text`
     margin:20px 0;
 `
 const VideoBtn = styled.TouchableOpacity`
-
+    flex-direction: row;
 `;
 const BtnText = styled.Text`
     color:white;
     font-weight: 600;
     margin-bottom: 10px;
+    margin-left: 15px;
+    width: 70%;
 `;
-const goToDetail=() => {
-    navigation.navigate("Stack", {
-        screen:"Detail" , 
-        params:{
-            title,
-        },
-    });
-}
+// const goToDetail=() => {
+//     navigation.navigate("Stack", {
+//         screen:"Detail" , 
+//         params:{
+//             title,
+//         },
+//     });
+// }
 const Data = styled.View`
     padding: 0 20px;
 `
@@ -59,20 +63,40 @@ const Detail = ({
     navigation:{setOptions},
     route:{params}
     }) => {
-    console.log(params);
-    //     const {isLoading,data:movieData} = useQuery(
-    //         ["movies", params.id], 
-    //         moviesAPI.detail
-    //         );
+    const ShareMedia =async() => {
+      
+        await Share.share({
+            url:params.url,
+            message:params.description_intro,
+            title:params.title
+        })
+    }
+    const ShareButton = () => (
+        <TouchableOpacity onPress={ShareMedia}>
+            <Ionicons name="share-outline" size={24} color="white" />
+        </TouchableOpacity>
+    );
+    console.log("params는?", params);
+    const {isLoading,data:movieData} = useQuery(
+        ["movies", params.id], 
+        moviesAPI.detail
+    );
+    console.log("isLoading상태는?", isLoading);
+    console.log("data는?",movieData);
     useEffect(()=>{
         setOptions({
             title: params.title,
+            headerRight: () => <ShareButton />
         })
     },[]);
+    const openLink = async() => {
+        const baseUrl=params.url;
+        await Linking.openURL(baseUrl);
+    }
     // const allData=params.allData;
-    //    const data = movieData.data.movie;
-    //    console.log(data);        
-        // console.log(data.data.movie.torrents)
+    //    const movieDetailData = movieData.data.movie;
+    //console.log(data);        
+    // console.log(data.data.movie.torrents)
     return(
         <Container>
             <Header>
@@ -92,16 +116,22 @@ const Detail = ({
             </Header>
             <Data>
                 <Overview>{params.summary}</Overview>
-                {/* {isLoading ? <Loader/> : null}
-                {data.torrents.map((url) => (
-                    <VideoBtn key={url.peers}>
-                        <BtnText>
-                            {url.date_uploaded}
-                        </BtnText>
+                {isLoading ? <Loader/> : null}
+                {/* //API에서 받아온 data를 인식하지 못함. 이미 Detail Screen에 있으면 API 정보에 접근이 가능한데 Screen으로 이동할 때는 api 정보를 받지 못함 */}
+                {/* {data.data.movie.torrents.map((torrent) => (
+                    <VideoBtn key={torrent.peers}>
+                        <MaterialCommunityIcons name="movie-play-outline" size={24} color="white" />
+                        <BtnText>{torrent.url}</BtnText>
                     </VideoBtn>
                 ))} */}
+              
+                <VideoBtn onPress={()=>openLink(params.id)}>
+                    <MaterialCommunityIcons name="movie-play-outline" size={24} color="white" />
+                    <BtnText>URL to watching movie</BtnText>
+                </VideoBtn>
+              
             </Data>
-            <Text>hello detail</Text>
+          
 
            
         </Container>

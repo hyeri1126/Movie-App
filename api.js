@@ -19,6 +19,13 @@ export const moviesAPI = {
         return fetch(
             `https://yts.mx/api/v2/list_movies.json?query_term=${query}`
         ).then((res)=>res.json())
+    },
+    detail:({queryKey}) =>{
+        const [,id] = queryKey;
+        console.log("movie id는?", id)
+        return fetch(
+            `https://yts.mx/api/v2/movie_details.json?movie_id=${id}`
+        ).then((res)=>res.json())
     }
 };
 
