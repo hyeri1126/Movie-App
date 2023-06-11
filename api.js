@@ -4,7 +4,7 @@
 export const moviesAPI = { 
     getNowPlaying: () => 
     fetch(
-        "https://yts.mx/api/v2/list_movies.json?minimum_rating=9&sort_by=year"
+        "https://yts.mx/api/v2/list_movies.json?minimum_rating=4&sort_by=year"
     ).then((res)=>res.json()), 
     getUpComing: () => 
     fetch(
@@ -14,9 +14,10 @@ export const moviesAPI = {
     fetch(
         "https://yts.mx/api/v2/list_movies.json?minimum_rating=2&sort_by=year"
     ).then((res)=>res.json()),
-    search: () => {
+    search: ({queryKey}) => {
+        const [,query] = queryKey;
         return fetch(
-            "https://yts.mx/api/v2/list_movies.json?minimum_rating=2&sort_by=year"
+            `https://yts.mx/api/v2/list_movies.json?query_term=${query}`
         ).then((res)=>res.json())
     }
 };
@@ -24,7 +25,7 @@ export const moviesAPI = {
 export const tvAPI = {
     trending: () => 
     fetch(
-        "https://yts.mx/api/v2/list_movies.json?minimum_rating=2&sort_by=month"
+        "https://yts.mx/api/v2/list_movies.json?minimum_rating=2&sort_by=year"
     ).then((res)=>res.json()),
 
     airingToday: () => 
@@ -34,6 +35,6 @@ export const tvAPI = {
 
     topRated: () => 
     fetch(
-        "https://yts.mx/api/v2/list_movies.json?minimum_rating=8.5&sort_by=month"
+        "https://yts.mx/api/v2/list_movies.json?minimum_rating=3&sort_by=year"
     ).then((res)=>res.json()),
 };
