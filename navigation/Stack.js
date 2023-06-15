@@ -32,7 +32,9 @@ const Stack = () => {
             },
             headerTitleStyle:{
                 color:"white"
+    
             },
+            
         }}>
             <NativeStack.Screen name="Detail" component={Detail} />
           
